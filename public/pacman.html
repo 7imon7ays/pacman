@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>canvas
+    <script>
+      var socket = io.connect("http://localhost");
+
+      $(Document).on("keydown", function (event) {
+        socket.emit("keyPressed", { keyPressed: event.keyCode });
+      });
+      
+      socket.on("handledKeyPress", function (gameData) {
+        var pacman = gameData.pacman;
+        console.log("Pacman now at " + pacman.x + ":" + pacman.y);
+      })
+      </script>
+  </body>
+</html>
+
