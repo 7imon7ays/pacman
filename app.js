@@ -1,17 +1,20 @@
 var app = require("http").createServer(handler);
 var io = require("socket.io").listen(app);
 var fs = require("fs");
-var Game = require("./pacman/game");
+var Game = require("./pacman/pacman-server");
 
 app.listen(3000);
 
 function handler (req, res) {
   switch (req.url) {
     case "/pacman":
-      render("public/pacman.html", res);
+      render("public/game-room.html", res);
+      io.sockets.on("connection", function(socket) {
+        listenForGameLoad(socket);
+      });
       break;
-    case "/":
-      render("public/chat.html", res);
+    case "/pacman-client":
+      render("public/pacman-client.js", res);
       break;
     default:
       res.writeHead(404);
@@ -20,19 +23,21 @@ function handler (req, res) {
   }
 }
 
+function listenForGameLoad(socket) {
+  socket.on("gameLoaded", function () {
+    var game = new Game(socket);
+    game.start(socket);
+  });
+}
+
 function render(filename, res) {
   fs.readFile(filename, function (err, data) {
     if (err) {
       res.writeHead(500);
-      return res.end("Error loading index.html");
+      return res.end("Error loading " + filename);
     }
 
     res.writeHead(200);
     res.end(data);
   });
 }
-
-
-io.sockets.on("connection", function(socket) {
-  Game.start(socket);
-});

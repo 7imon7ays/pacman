@@ -11,8 +11,7 @@ Pacman.prototype.step = function () {
   this.y += this.yDelta;
 };
 
-Pacman.prototype.turn = function (keyCode) {
-  console.log(typeof keyCode);
+Pacman.prototype.turn = function (keyCode, successCallBack) {
   switch (keyCode) {  
   case 38:
     this.yDelta = 5;
@@ -31,6 +30,7 @@ Pacman.prototype.turn = function (keyCode) {
     this.xDelta = 5;
     break;
   }
+  successCallBack();
 }
 
 module.exports = Pacman;

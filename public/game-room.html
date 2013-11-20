@@ -1,22 +1,30 @@
 <html>
   <head>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <script
+      type="text/javascript"
+      src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
+    >
+    </script>
+    <script
+      type="text/javascript"
+      src="http://requirejs.org/docs/release/2.1.9/comments/require.js"
+    >
+    </script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <canvas id="canvas" width="500" height="500"></canvas>canvas
-    <script>
-      var socket = io.connect("http://localhost");
-
-      $(Document).on("keydown", function (event) {
-        socket.emit("keyPressed", { keyPressed: event.keyCode });
+    <p>Pacman</p>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <script type="text/javascript">
+      $.ajax({
+        url: "pacman-client",
+        success: function (data) {
+          var gameScript = document.createElement("script");
+          gameScript.setAttribute("type", "text/javascript");
+          $(gameScript).append(data);
+          $("body").append(gameScript);
+        }
       });
-      
-      socket.on("handledKeyPress", function (gameData) {
-        var pacman = gameData.pacman;
-        console.log("Pacman now at " + pacman.x + ":" + pacman.y);
-      })
-      </script>
+    </script>
   </body>
 </html>
-
