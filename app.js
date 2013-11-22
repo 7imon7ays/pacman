@@ -4,16 +4,16 @@ var fs = require("fs");
 var Game = require("./pacman/pacman-server");
 
 app.listen(3000);
+io.sockets.on("connection", function(socket) {
+  listenForGameLoad(socket);
+});
 
 function handler (req, res) {
   switch (req.url) {
     case "/pacman":
       render("public/game-room.html", res);
-      io.sockets.on("connection", function(socket) {
-        listenForGameLoad(socket);
-      });
       break;
-    case "/pacman-client":
+    case "/public/pacman-client.js":
       render("public/pacman-client.js", res);
       break;
     default:
@@ -26,7 +26,9 @@ function handler (req, res) {
 function listenForGameLoad(socket) {
   socket.on("gameLoaded", function () {
     var game = new Game(socket);
-    game.start(socket);
+    var pacmanCoords = { x: 200, y: 200 };
+    var canvasDimensions = { height: 300, width: 500 };
+    game.start(2, pacmanCoords, canvasDimensions);
   });
 }
 

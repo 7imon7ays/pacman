@@ -1,6 +1,7 @@
+Pacman = require("./player");
+
 Game = function (socket) {
   this.socket = socket;
-  this.Pacman = require("./player");
 };
 
 Game.prototype.step = function () {
@@ -9,17 +10,15 @@ Game.prototype.step = function () {
 
 Game.prototype.animate = function () {
   var self = this;
+  var pacmanState = this.pacman;
   setInterval(function () {
     self.step();
-  }, 100)
+    self.socket.emit("update", pacmanState);
+  }, 30)
 };
 
 Game.prototype.handleKeyPress = function (keyCode) {
-  this.pacman.turn(keyCode, this.inputProcessed.bind(this));
-};
-
-Game.prototype.inputProcessed = function () {
-  this.socket.emit("inputProcessed", this.pacman);
+  this.pacman.turn(keyCode);
 };
 
 Game.prototype.listenForInput = function () {
@@ -29,8 +28,14 @@ Game.prototype.listenForInput = function () {
   });
 };
 
-Game.prototype.start = function () {
-  this.pacman = new this.Pacman(0, 0);
+Game.prototype.setCanvasDimensions = function () {
+  this.socket.emit("setCanvasDimensions", this.plane);
+}
+
+Game.prototype.start = function (pacmanSpeed, pacmanCoords, canvasDimensions) {
+  this.pacman = new Pacman(pacmanSpeed, pacmanCoords.x, pacmanCoords.y);
+  this.plane = canvasDimensions;
+  this.setCanvasDimensions();
   this.animate();
   this.listenForInput();
 };
