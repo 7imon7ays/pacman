@@ -1,4 +1,5 @@
-function Pacman () {
+function Pacman (id) {
+  this.id = id;
   this.size = 10;
 }
 
@@ -18,38 +19,50 @@ Pacman.prototype.render = function (canvas) {
 function Game (canvas, socket) {
   this.canvas = canvas;
   this.socket = socket;
+  this.pacmen = {};
 }
 
-Game.prototype.listenForCanvasDimensions = function () {
-  this.socket.on("setCanvasDimensions", function (canvasDimensions) {
+Game.prototype.listenForGameParams = function () {
+  var self = this;
+  this.socket.on("setParams", function (gameParams) {
+    self.sessionid = this.socket["sessionid"];
     $canvas = $("#canvas");
-    $canvas.height(canvasDimensions.height);
-    $canvas.width(canvasDimensions.width);
+    $canvas.height(gameParams.canvasSize.height);
+    $canvas.width(gameParams.canvasSize.width);
+    _(gameParams.pacmenIDs).each(function (id) {
+      self.addPlayer(id);
+    })
   });
 }
 
-Game.prototype.listenForInput = function () {
+Game.prototype.addPlayer = function (id) {
+  this.pacmen[id] = new Pacman(id);
+}
+
+Game.prototype.listenForPlayer = function () {
   var self = this;
   $(document).on("keydown", function (event) {
-    self.socket.emit("keyPressed", { keyPressed: event.keyCode });
+    self.socket.emit("keyPressed", { keyPressed: event.keyCode, socketid: self.sessionid });
   });  
 }
 
-Game.prototype.listenForUpdate = function () {
+Game.prototype.listenForServer = function () {
   var self = this;
-  socket.on("update", function (pacmanState) {
+  socket.on("update", function (pacmenStates) {
     self.canvas.clearRect(0, 0, 500, 500);
-    self.pacman = _.defaults(pacmanState, self.pacman);
-    self.pacman.render(self.canvas);
-  })
+    _(pacmenStates).each(function (player) {
+      self.pacmen[player.id] = _.defaults(player, self.pacmen[player.id]);
+      self.pacmen[player.id].render(self.canvas);
+    });
+  });
 }
 
 Game.prototype.start = function () {
-  this.pacman = new Pacman();
-  this.listenForCanvasDimensions();
-  this.listenForInput();
-  this.listenForUpdate();
+  this.listenForGameParams();
+  this.listenForServer();
+  this.listenForPlayer();
   this.socket.emit("gameLoaded");
+  return this;
 }
 
 var canvas = document.getElementById("canvas").getContext("2d");

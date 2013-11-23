@@ -1,7 +1,8 @@
-Pacman = function (speed, x, y) {
-  this.x = x;
-  this.y = y;
+Pacman = function (id, speed, plane) {
+  this.id = id;
   this.speed = speed;
+  this.x = Math.floor(Math.random() * plane.width);
+  this.y = Math.floor(Math.random() * plane.height);
   this.xDelta = 0;
   this.yDelta = -(this.speed);
 };

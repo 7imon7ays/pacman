@@ -1,7 +1,10 @@
+var _ = require("underscore");
 var app = require("http").createServer(handler);
 var io = require("socket.io").listen(app);
 var fs = require("fs");
 var Game = require("./pacman/pacman-server");
+var game;
+var playerCount = 0;
 
 app.listen(3000);
 io.sockets.on("connection", function(socket) {
@@ -10,10 +13,13 @@ io.sockets.on("connection", function(socket) {
 
 function handler (req, res) {
   switch (req.url) {
-    case "/pacman":
+    case "/":
+      render("public/chat-room.html", res);
+      break;
+    case "/game-room.html":
       render("public/game-room.html", res);
       break;
-    case "/public/pacman-client.js":
+    case "/pacman-client.js":
       render("public/pacman-client.js", res);
       break;
     default:
@@ -25,10 +31,14 @@ function handler (req, res) {
 
 function listenForGameLoad(socket) {
   socket.on("gameLoaded", function () {
-    var game = new Game(socket);
-    var pacmanCoords = { x: 200, y: 200 };
-    var canvasDimensions = { height: 300, width: 500 };
-    game.start(2, pacmanCoords, canvasDimensions);
+    if (game) {
+      game.addPlayer(socket);
+    } else {
+      var canvasDimensions = { height: 300, width: 500 };
+      var pacmanSpeed = 2;
+      game = new Game(pacmanSpeed, canvasDimensions);
+      game.start(socket);
+    }
   });
 }
 

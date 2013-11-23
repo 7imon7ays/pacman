@@ -1,5 +1,7 @@
 {
   "dependencies": {
-  "socket.io": "*"
+  "socket.io": "*",
+  "underscore": "*",
+  "debug": "*"
   }
 }
