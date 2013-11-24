@@ -49,12 +49,17 @@ Game.prototype.listenForPlayer = function () {
 Game.prototype.listenForServer = function () {
   var self = this;
   socket.on("update", function (pacmenStates) {
-    self.canvas.clearRect(0, 0, 500, 500);
-    _(pacmenStates).each(function (player) {
-      self.pacmen[player.id] = _.defaults(player, self.pacmen[player.id]);
-      self.pacmen[player.id].render(self.canvas);
-    });
+    self.updateAndRender(pacmenStates);
   });
+}
+
+Game.prototype.updateAndRender = function (pacmenStates) {
+  var self = this;
+  this.canvas.clearRect(0, 0, 500, 500);
+  _(pacmenStates).each(function (player) {
+    self.pacmen[player.id] = _.defaults(player, self.pacmen[player.id]);
+    self.pacmen[player.id].render(self.canvas);
+  });  
 }
 
 Game.prototype.start = function () {

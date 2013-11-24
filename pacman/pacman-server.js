@@ -39,7 +39,7 @@ Game.prototype._getPacmenIDs = function () {
 Game.prototype.listenForInput = function (socket) {
   var self = this;
   socket.on("keyPressed", function (data) {
-    self.handleKeyPress(data.keyPressed);
+    self.handleKeyPress(data.keyPressed, data.socketid);
   });
 };
 
@@ -66,10 +66,8 @@ Game.prototype.step = function () {
   _(this.pacmen).each(function(pacman){ pacman.step(); });
 };
 
-Game.prototype.handleKeyPress = function (keyCode) {
-  _(this.pacmen).each(function (pacman) {
-    pacman.turn(keyCode);
-  });
+Game.prototype.handleKeyPress = function (keyCode, socketid) {
+  this.pacmen[socketid].turn(keyCode);
 };
 
 module.exports = Game;
