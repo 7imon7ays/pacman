@@ -15,10 +15,11 @@ Game.prototype.start = function (socket) {
 }
 
 Game.prototype.addPlayer = function (socket) {
+  var self = this;
   this.playerCount++;
   this.sockets[socket.id] = socket;
   this.pacmen[socket.id] = new Pacman(socket.id, this.pacmanSpeed, this.plane);
-  this.setParams(socket);
+  _(this.sockets).each(function (socket) { self.setParams(socket); });
   this.listenForInput(socket);
   this.listenForExit(socket);
 }
@@ -57,7 +58,16 @@ Game.prototype.listenForExit = function (socket) {
   self = this;
   socket.on("disconnect", function () {
     console.log("player disconnected");
-    delete self.sockets[socket.id];
+    var playerId = socket.id;
+    delete self.sockets[playerId];
+    delete self.pacmen[playerId];
+    self.announceExit(playerId);
+  })
+}
+
+Game.prototype.announceExit = function (playerId) {
+  _(this.sockets).each(function (socket) {
+    socket.emit("playerDisconnected", playerId)
   })
 }
 

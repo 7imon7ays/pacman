@@ -20,12 +20,13 @@ function Game (canvas, socket) {
   this.canvas = canvas;
   this.socket = socket;
   this.pacmen = {};
+  this.sessionid = null;
 }
 
 Game.prototype.listenForGameParams = function () {
   var self = this;
   this.socket.on("setParams", function (gameParams) {
-    self.sessionid = this.socket["sessionid"];
+    self.sessionid || (self.sessionid = this.socket["sessionid"]);
     $canvas = $("#canvas");
     $canvas.height(gameParams.canvasSize.height);
     $canvas.width(gameParams.canvasSize.width);
@@ -47,10 +48,22 @@ Game.prototype.listenForPlayer = function () {
 }
 
 Game.prototype.listenForServer = function () {
+  this.listenForUpdate();
+  this.listenForExit();
+}
+
+Game.prototype.listenForUpdate = function () {
   var self = this;
-  socket.on("update", function (pacmenStates) {
+  this.socket.on("update", function (pacmenStates) {
     self.updateAndRender(pacmenStates);
   });
+}
+
+Game.prototype.listenForExit = function () {
+  var self = this;
+  this.socket.on("playerDisconnected", function (playerId) {
+    delete self.pacmen[playerId];
+  })
 }
 
 Game.prototype.updateAndRender = function (pacmenStates) {
