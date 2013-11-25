@@ -19,24 +19,45 @@ Pacman.prototype.step = function () {
   var self = this;
   this.x += this.xDelta;
   this.y += this.yDelta;
-  _(this.grid).each(function (line) {
-    self.stopIfBlocked(line); 
-  });
+  var blockedDirection = this.checkForBlocks();
+  this.stopIfBlocked(blockedDirection); 
   this.wrapAround();
 };
 
-Pacman.prototype.stopIfBlocked = function (line) {
-  if (this.isRightBlocked(line)) {
+Pacman.prototype.checkForBlocks = function () {
+  var self = this;
+  var blockedDirection;
+  _(this.grid).each(function (line) {
+    if (self.isRightBlocked(line)) {
+      blockedDirection = "right";
+    }
+    if (self.isLeftBlocked(line)) {
+      blockedDirection = "left";
+    }
+    if (self.isTopBlocked(line)) {
+      blockedDirection = "top";
+    }
+    if (self.isBottomBlocked(line)) {
+      blockedDirection = "bottom";
+    }
+  });
+  return blockedDirection;
+}
+
+Pacman.prototype.stopIfBlocked = function (blockedDirection) {
+  switch (blockedDirection) {  
+  case "right":
     this.xDelta = 0;
-  }
-  if (this.isLeftBlocked(line)) {
+    break;
+  case "left":
     this.xDelta = 0;
-  }
-  if (this.isTopBlocked(line)) {
+    break;
+  case "top":
     this.yDelta = 0;
-  }
-  if (this.isBottomBlocked(line)) {
+    break;
+  case "bottom":
     this.yDelta = 0;
+    break;
   }
 }
 
@@ -96,6 +117,7 @@ Pacman.prototype.wrapAround = function () {
 }
 
 Pacman.prototype.turn = function (keyCode) {
+  if (this._blockedInThatDirection(keyCode)) return;
   switch (keyCode) {  
   case 38:
     this.yDelta = -(this.speed);
@@ -112,6 +134,23 @@ Pacman.prototype.turn = function (keyCode) {
   case 39:
     this.yDelta = 0;
     this.xDelta = this.speed;
+    break;
+  }
+}
+
+Pacman.prototype._blockedInThatDirection = function (keyCode) {
+  switch (keyCode) {
+  case 38:
+    if (this.checkForBlocks() == "top") return true;
+    break;
+  case 40:
+    if (this.checkForBlocks() == "bottom") return true;    
+    break;
+  case 37:
+    if (this.checkForBlocks() == "left") return true;
+    break;
+  case 39:
+    if (this.checkForBlocks() == "right") return true;
     break;
   }
 }
