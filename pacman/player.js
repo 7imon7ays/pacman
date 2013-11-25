@@ -28,23 +28,64 @@ Pacman.prototype.step = function () {
 Pacman.prototype.stopIfBlocked = function (line) {
   if (this.isRightBlocked(line)) {
     this.xDelta = 0;
-  } 
+  }
+  if (this.isLeftBlocked(line)) {
+    this.xDelta = 0;
+  }
+  if (this.isTopBlocked(line)) {
+    this.yDelta = 0;
+  }
+  if (this.isBottomBlocked(line)) {
+    this.yDelta = 0;
+  }
 }
 
 Pacman.prototype.isRightBlocked = function (line) {
-  return this._lineIsToRight(line) && !this._lineIsToLeft(line);
+  return this._isLeftOf(line)
+    && this._verticallyCollides(line);
 }
 
-Pacman.prototype._lineIsToRight = function (line) {
-  return line.x - this.size - 2 < this.x
-    && this.y >= line.y
-    && this.y <= line.y + line.height;
+Pacman.prototype.isLeftBlocked = function (line) {
+  return this._isRightOf(line)
+    && this._verticallyCollides(line);
 }
 
-Pacman.prototype._lineIsToLeft = function (line) {
-  return line.x < this.x
-    && this.y >= line.y
-    && this.y <= line.y + line.height;
+Pacman.prototype._isRightOf = function (line) {
+  return this.x > line.x;
+}
+
+Pacman.prototype._isLeftOf = function (line) {
+  return this.x < line.x;
+}
+
+Pacman.prototype._verticallyCollides = function (line) {
+  return this.y >= line.y
+    && this.y <= (line.y + line.height)
+    && Math.abs(line.x - this.x) < this.size;
+}
+
+Pacman.prototype.isTopBlocked = function (line) {
+  return this._isBelow(line)
+    && this._horizontallyCollides(line);
+}
+
+Pacman.prototype.isBottomBlocked = function (line) {
+  return this._isAbove(line)
+    && this._horizontallyCollides(line);
+}
+
+Pacman.prototype._isAbove = function (line) {
+  return this.y < line.y;
+}
+
+Pacman.prototype._isBelow = function (line) {
+  return this.y > line.y;
+}
+
+Pacman.prototype._horizontallyCollides = function (line) {
+  return this.x >= line.x
+    && this.x <= (line.x + line.width)
+    && Math.abs(line.y - this.y) < this.size;
 }
 
 Pacman.prototype.wrapAround = function () {
