@@ -22,6 +22,9 @@ function handler (req, res) {
     case "/pacman-client.js":
       render("public/pacman-client.js", res);
       break;
+    case "/player-client.js":
+      render("public/player-client.js", res);
+      break;
     default:
       res.writeHead(404);
       res.end("Not found");

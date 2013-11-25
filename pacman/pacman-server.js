@@ -7,9 +7,11 @@ Game = function (pacmanSpeed, canvasDimensions) {
   this.plane = canvasDimensions;
   this.sockets = {};
   this.pacmen = {};
+  this.grid = require("./grid")
 };
 
 Game.prototype.start = function (socket) {
+  console.log(this.grid)
   this.addPlayer(socket);
   this.animate();
 }
@@ -26,7 +28,7 @@ Game.prototype.addPlayer = function (socket) {
 
 Game.prototype.setParams = function (socket) {
   var pacmenIDs = this._getPacmenIDs();
-  socket.emit("setParams", { canvasSize: this.plane, pacmenIDs: pacmenIDs });
+  socket.emit("setParams", { canvasSize: this.plane, pacmenIDs: pacmenIDs, grid: this.grid });
 }
 
 Game.prototype._getPacmenIDs = function () {

@@ -1,6 +1,7 @@
 Pacman = function (id, speed, plane) {
   this.id = id;
   this.speed = speed;
+  this.plane = plane;
   this.x = Math.floor(Math.random() * plane.width);
   this.y = Math.floor(Math.random() * plane.height);
   this.xDelta = 0;
@@ -11,6 +12,10 @@ Pacman = function (id, speed, plane) {
 Pacman.prototype.step = function () {
   this.x += this.xDelta;
   this.y += this.yDelta;
+  if (this.x > this.plane.width) this.x = 0;
+  if (this.x < 0) this.x = this.plane.width;
+  if (this.y > this.plane.height) this.y = 0;
+  if (this.y < 0) this.y = this.plane.height;
 };
 
 Pacman.prototype.turn = function (keyCode) {

@@ -1,19 +1,20 @@
-function Pacman (id) {
-  this.id = id;
-  this.size = 10;
+function Grid(gridpattern) {
+  this.lines = [];
+  for (line in gridpattern) {
+    this.lines.push(gridpattern[line]);
+  }
 }
 
-Pacman.prototype.render = function (canvas) {
+Grid.prototype.render = function (canvas) {
   var self = this;
-  
-  canvas.fillStyle   = "FF0000";
-  canvas.strokeStyle = "FF0000";
+  _(this.lines).each(function (line) {
+    self.drawLine(line, canvas);
+  })
+}
 
-  canvas.beginPath();
-  canvas.arc(self.x, self.y, self.size, 0, Math.PI*2, true);
-  canvas.closePath();
-  canvas.fill();
-  canvas.stroke();
+Grid.prototype.drawLine = function (line, canvas) {
+  canvas.fillStyle   = "111111";
+  canvas.fillRect(line.x, line.y, line.width, line.height);
 }
 
 function Game (canvas, socket) {
@@ -21,19 +22,34 @@ function Game (canvas, socket) {
   this.socket = socket;
   this.pacmen = {};
   this.sessionid = null;
+  this.grid = null;
 }
 
 Game.prototype.listenForGameParams = function () {
   var self = this;
   this.socket.on("setParams", function (gameParams) {
-    self.sessionid || (self.sessionid = this.socket["sessionid"]);
-    $canvas = $("#canvas");
-    $canvas.height(gameParams.canvasSize.height);
-    $canvas.width(gameParams.canvasSize.width);
-    _(gameParams.pacmenIDs).each(function (id) {
-      self.addPlayer(id);
-    })
+    self.applyGameParams(gameParams);
   });
+}
+
+Game.prototype.applyGameParams = function (gameParams) {
+  var self = this;
+  this.setSessionId(this.socket.socket.sessionid);
+  this.setCanvasDimensions(gameParams.canvasSize);
+  this.grid = new Grid(gameParams.grid);
+  _(gameParams.pacmenIDs).each(function (id) {
+    self.addPlayer(id);
+  });
+}
+
+Game.prototype.setSessionId = function (sessionid) {
+  this.sessionid || (this.sessionid = sessionid);
+}
+
+Game.prototype.setCanvasDimensions = function (canvasSize) {
+  $canvas = $("#canvas");
+  $canvas.height(canvasSize.height);
+  $canvas.width(canvasSize.width);
 }
 
 Game.prototype.addPlayer = function (id) {
@@ -67,12 +83,17 @@ Game.prototype.listenForExit = function () {
 }
 
 Game.prototype.updateAndRender = function (pacmenStates) {
-  var self = this;
   this.canvas.clearRect(0, 0, 500, 500);
+  this.grid.render(this.canvas);
+  this.renderPacmen(pacmenStates);
+}
+
+Game.prototype.renderPacmen = function (pacmenStates) {
+  var self = this;
   _(pacmenStates).each(function (player) {
     self.pacmen[player.id] = _.defaults(player, self.pacmen[player.id]);
     self.pacmen[player.id].render(self.canvas);
-  });  
+  });
 }
 
 Game.prototype.start = function () {
