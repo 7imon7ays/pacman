@@ -11,7 +11,6 @@ Game = function (pacmanSpeed, canvasDimensions) {
 };
 
 Game.prototype.start = function (socket) {
-  console.log(this.grid)
   this.addPlayer(socket);
   this.animate();
 }
@@ -20,7 +19,7 @@ Game.prototype.addPlayer = function (socket) {
   var self = this;
   this.playerCount++;
   this.sockets[socket.id] = socket;
-  this.pacmen[socket.id] = new Pacman(socket.id, this.pacmanSpeed, this.plane);
+  this.pacmen[socket.id] = new Pacman(socket.id, this.pacmanSpeed, this.plane, this.grid);
   _(this.sockets).each(function (socket) { self.setParams(socket); });
   this.listenForInput(socket);
   this.listenForExit(socket);
@@ -54,7 +53,7 @@ Game.prototype.animate = function () {
       socket.emit("update", self.pacmen);
     });
   }, 30)
-};
+}
 
 Game.prototype.listenForExit = function (socket) {
   self = this;

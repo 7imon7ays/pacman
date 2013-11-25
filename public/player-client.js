@@ -1,6 +1,5 @@
 function Pacman (id) {
   this.id = id;
-  this.size = 10;
 }
 
 Pacman.prototype.render = function (canvas) {
