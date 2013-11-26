@@ -25,21 +25,13 @@ Pacman.prototype.step = function () {
 };
 
 Pacman.prototype.checkForBlocks = function () {
-  var self = this;
   var blockedDirection;
+  var self = this;
   _(this.grid).each(function (line) {
-    if (self.isRightBlocked(line)) {
-      blockedDirection = "right";
-    }
-    if (self.isLeftBlocked(line)) {
-      blockedDirection = "left";
-    }
-    if (self.isTopBlocked(line)) {
-      blockedDirection = "top";
-    }
-    if (self.isBottomBlocked(line)) {
-      blockedDirection = "bottom";
-    }
+    if (self.isRightBlocked(line)) blockedDirection = "right";
+    if (self.isLeftBlocked(line)) blockedDirection = "left";
+    if (self.isTopBlocked(line)) blockedDirection = "top";
+    if (self.isBottomBlocked(line)) blockedDirection = "bottom";
   });
   return blockedDirection;
 }
@@ -141,16 +133,16 @@ Pacman.prototype.turn = function (keyCode) {
 Pacman.prototype._blockedInThatDirection = function (keyCode) {
   switch (keyCode) {
   case 38:
-    if (this.checkForBlocks() == "top") return true;
+    if (this.checkForBlocks() === "top") return true;
     break;
   case 40:
-    if (this.checkForBlocks() == "bottom") return true;    
+    if (this.checkForBlocks() === "bottom") return true;    
     break;
   case 37:
-    if (this.checkForBlocks() == "left") return true;
+    if (this.checkForBlocks() === "left") return true;
     break;
   case 39:
-    if (this.checkForBlocks() == "right") return true;
+    if (this.checkForBlocks() === "right") return true;
     break;
   }
 }
