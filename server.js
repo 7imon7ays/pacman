@@ -2,7 +2,7 @@ var _ = require("underscore");
 var app = require("http").createServer(handler);
 var io = require("socket.io").listen(app);
 var fs = require("fs");
-var Game = require("./pacman/pacman-server");
+var Game = require("./game_logic/game-server");
 var game;
 var playerCount = 0;
 
@@ -16,14 +16,17 @@ function handler (req, res) {
     case "/":
       render("public/chat-room.html", res);
       break;
+    case "/game-client.js":
+      render("public/game-client.js", res);
+      break;
     case "/game-room.html":
       render("public/game-room.html", res);
       break;
+    case "/grid-client.js":
+      render("public/grid-client.js", res);
+      break;
     case "/pacman-client.js":
       render("public/pacman-client.js", res);
-      break;
-    case "/player-client.js":
-      render("public/player-client.js", res);
       break;
     default:
       res.writeHead(404);

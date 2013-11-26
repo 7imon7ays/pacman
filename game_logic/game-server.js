@@ -1,13 +1,13 @@
 var _ = require("underscore");
-Pacman = require("./player");
+var Pacman = require("./pacman-server");
 
-Game = function (pacmanSpeed, canvasDimensions) {
+function Game (pacmanSpeed, canvasDimensions) {
   this.playerCount = 0;
   this.pacmanSpeed = pacmanSpeed;
   this.plane = canvasDimensions;
   this.sockets = {};
   this.pacmen = {};
-  this.grid = require("./grid")
+  this.grid = require("./grid-server")
 };
 
 Game.prototype.start = function (socket) {

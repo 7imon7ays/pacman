@@ -1,6 +1,6 @@
 var _ = require("underscore");
 
-Pacman = function (id, speed, plane, grid) {
+function Pacman (id, speed, plane, grid) {
   this.size = 10;
   this.id = id;
   this.speed = speed;
