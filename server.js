@@ -5,8 +5,10 @@ var fs = require("fs");
 var Game = require("./game_logic/game-server");
 var game;
 var playerCount = 0;
+var port = process.env.PORT || 3000;
 
-app.listen(process.env.PORT || 5000);
+
+app.listen(port);
 io.sockets.on("connection", function(socket) {
   listenForGameLoad(socket);
 });
@@ -18,6 +20,9 @@ function handler (req, res) {
       break;
     case "/game-client.js":
       render("public/game-client.js", res);
+      break;
+    case "/game-port":
+      setPort(res);
       break;
     case "/game-room.html":
       render("public/game-room.html", res);
@@ -58,4 +63,9 @@ function render(filename, res) {
     res.writeHead(200);
     res.end(data);
   });
+}
+
+function setPort(res) {
+  res.writeHead(200);
+  res.end(port.toString());
 }

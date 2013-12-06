@@ -86,5 +86,10 @@ Game.prototype.start = function () {
 }
 
 var canvas = document.getElementById("canvas").getContext("2d");
-var socket = io.connect("http://localhost");
+var port;
+$.get("game-port", function (data) {
+  port = data;
+});
+
+var socket = io.connect(port);
 var game = new Game(canvas, socket).start();
