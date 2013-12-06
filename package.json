@@ -1,4 +1,11 @@
 {
+  "name": "pacmen",
+  "main": "server.js",
+  "respository": {
+    "type": "git",
+    "url": "https://github.com/7imon7ays/pacmen"
+  },
+  "author": "7imon7ays",
   "dependencies": {
   "socket.io": "*",
   "underscore": "*",
