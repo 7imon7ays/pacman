@@ -6,7 +6,7 @@ var Game = require("./game_logic/game-server");
 var game;
 var playerCount = 0;
 
-app.listen(3000);
+app.listen(process.env.PORT || 5000);
 io.sockets.on("connection", function(socket) {
   listenForGameLoad(socket);
 });
