@@ -6,10 +6,8 @@ function Pacman (id, speed, plane, grid) {
   this.speed = speed;
   this.plane = plane;
   this.grid = grid;
-  // this.x = Math.floor(Math.random() * plane.width);
-  // this.y = Math.floor(Math.random() * plane.height);
-  this.x = 120;
-  this.y = 80;
+  this.x = 10;
+  this.y = 10;
   this.xDelta = this.speed;
   this.yDelta = 0;
 };
@@ -102,10 +100,11 @@ Pacman.prototype._horizontallyCollides = function (line) {
 }
 
 Pacman.prototype.wrapAround = function () {
-  if (this.x > this.plane.width) this.x = 0;
-  if (this.x < 0) this.x = this.plane.width;
-  if (this.y > this.plane.height) this.y = 0;
-  if (this.y < 0) this.y = this.plane.height;
+  var buffer = 0;
+  if (this.x + buffer > this.plane.width) this.x = 0;
+  if (this.x - buffer < 0) this.x = this.plane.width;
+  if (this.y + buffer > this.plane.height) this.y = 0;
+  if (this.y - buffer < 0) this.y = this.plane.height;
 }
 
 Pacman.prototype.turn = function (keyCode) {

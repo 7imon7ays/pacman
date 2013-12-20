@@ -7,8 +7,12 @@
   },
   "author": "7imon7ays",
   "dependencies": {
-  "socket.io": "*",
-  "underscore": "*",
-  "debug": "*"
+    "socket.io": "*",
+    "underscore": "*",
+    "debug": "*"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "node-inspector": "*"
   }
 }
