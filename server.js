@@ -33,6 +33,9 @@ function handler (req, res) {
     case "/pacman-client.js":
       render("public/pacman-client.js", res);
       break;
+      case "/pacman-style.css":
+        render("public/pacman-style.css", res);
+      break;
     default:
       res.writeHead(404);
       res.end("Not found");
