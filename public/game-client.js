@@ -29,8 +29,8 @@ Game.prototype.setSessionId = function (sessionid) {
 
 Game.prototype.setCanvasDimensions = function (canvasSize) {
   $canvas = $("#canvas");
-  $canvas.height(canvasSize.height);
-  $canvas.width(canvasSize.width);
+  //$canvas.height(canvasSize.height);
+  //$canvas.width(canvasSize.width);
   this.canvasHeight = canvasSize.height;
   this.canvasWidth = canvasSize.width;
 }
