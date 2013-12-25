@@ -31,6 +31,8 @@ Game.prototype.setCanvasDimensions = function (canvasSize) {
   $canvas = $("#canvas");
   $canvas.height(canvasSize.height);
   $canvas.width(canvasSize.width);
+  this.canvasHeight = canvasSize.height;
+  this.canvasWidth = canvasSize.width;
 }
 
 Game.prototype.addPlayer = function (id) {
@@ -41,7 +43,7 @@ Game.prototype.listenForPlayer = function () {
   var self = this;
   $(document).on("keydown", function (event) {
     self.socket.emit("keyPressed", { keyPressed: event.keyCode, socketid: self.sessionid });
-  });  
+  });
 }
 
 Game.prototype.listenForServer = function () {
@@ -64,7 +66,7 @@ Game.prototype.listenForExit = function () {
 }
 
 Game.prototype.updateAndRender = function (pacmenStates) {
-  this.canvas.clearRect(0, 0, 500, 500);
+  this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
   this.grid.render(this.canvas);
   this.renderPacmen(pacmenStates);
 }
