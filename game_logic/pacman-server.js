@@ -2,6 +2,7 @@ var _ = require("underscore");
 
 function Pacman (id, speed, plane, grid) {
   this.size = 10;
+  this.buffer = 10 + 7;
   this.id = id;
   this.speed = speed;
   this.plane = plane;
@@ -35,7 +36,7 @@ Pacman.prototype.checkForBlocks = function () {
 }
 
 Pacman.prototype.stopIfBlocked = function (blockedDirection) {
-  switch (blockedDirection) {  
+  switch (blockedDirection) {
   case "right":
     this.xDelta = 0;
     break;
@@ -72,7 +73,7 @@ Pacman.prototype._isLeftOf = function (line) {
 Pacman.prototype._verticallyCollides = function (line) {
   return this.y >= line.y
     && this.y <= (line.y + line.height)
-    && Math.abs(line.x - this.x) < this.size;
+    && Math.abs(line.x - this.x) < this.buffer;
 }
 
 Pacman.prototype.isTopBlocked = function (line) {
@@ -96,7 +97,7 @@ Pacman.prototype._isBelow = function (line) {
 Pacman.prototype._horizontallyCollides = function (line) {
   return this.x >= line.x
     && this.x <= (line.x + line.width)
-    && Math.abs(line.y - this.y) < this.size;
+    && Math.abs(line.y - this.y) < this.buffer;
 }
 
 Pacman.prototype.wrapAround = function () {
@@ -109,7 +110,7 @@ Pacman.prototype.wrapAround = function () {
 
 Pacman.prototype.turn = function (keyCode) {
   if (this._blockedInThatDirection(keyCode)) return;
-  switch (keyCode) {  
+  switch (keyCode) {
   case 38:
     this.yDelta = -(this.speed);
     this.xDelta = 0;
@@ -135,7 +136,7 @@ Pacman.prototype._blockedInThatDirection = function (keyCode) {
     if (this.checkForBlocks() === "top") return true;
     break;
   case 40:
-    if (this.checkForBlocks() === "bottom") return true;    
+    if (this.checkForBlocks() === "bottom") return true;
     break;
   case 37:
     if (this.checkForBlocks() === "left") return true;
