@@ -48,9 +48,13 @@ Game.prototype.listenForInput = function (socket) {
 Game.prototype.animate = function () {
   var self = this;
   setInterval(function () {
+    var pacmenStates = {};
+    _(self.pacmen).each(function (pacman) {
+      pacmenStates[pacman.id] = _(pacman).pick("id", "x", "y", "xDelta", "yDelta", "size");
+    });
     self.step();
     _(self.sockets).each(function (socket) {
-      socket.emit("update", self.pacmen);
+      socket.emit("update", pacmenStates);
     });
   }, 30)
 }

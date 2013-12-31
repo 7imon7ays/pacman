@@ -80,9 +80,9 @@ Game.prototype.updateAndRender = function (pacmenStates) {
 
 Game.prototype.renderPacmen = function (pacmenStates) {
   var self = this;
-  _(pacmenStates).each(function (player) {
-    self.pacmen[player.id] = _.defaults(player, self.pacmen[player.id]);
-    self.pacmen[player.id].render(self.canvasCtx);
+  _(pacmenStates).each(function (state) {
+    self.pacmen[state.id] = _.defaults(state, self.pacmen[state.id]);
+    self.pacmen[state.id].render(self.canvasCtx);
   });
 }
 
