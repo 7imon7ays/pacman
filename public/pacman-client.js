@@ -16,13 +16,24 @@ Pacman.prototype.render = function (context) {
   context.strokeStyle = "fff";
   context.beginPath();
 
-  var upperLipX = this.x + 6 * this.xDelta;
-  var upperLipY = this.y - this.x % 8;
-  var lowerLipX = this.x + 6 * this.xDelta;
-  var lowerLipY = this.y + this.x % 8;
+  if (this.xDelta) {
+    var upperLipX = this.x + 6 * this.xDelta;
+    var upperLipY = this.y - this.x % 8;
+    var lowerLipX = this.x + 6 * this.xDelta;
+    var lowerLipY = this.y + this.x % 8;
 
-  context.lineTo(upperLipX, upperLipY);
-  context.lineTo(lowerLipX, lowerLipY);
+    context.lineTo(upperLipX, upperLipY);
+    context.lineTo(lowerLipX, lowerLipY);
+  } else {
+    var leftLipX = this.x + this.y % 8;
+    var leftLipY = this.y + 6 * this.yDelta;
+    var rightLipX = this.x - this.y % 8;
+    var rightLipY = this.y + 6 * this.yDelta;
+
+    context.lineTo(leftLipX, leftLipY);
+    context.lineTo(rightLipX, rightLipY);
+  }
+
 
   context.lineTo(this.x, this.y);
   context.closePath();
