@@ -5,14 +5,14 @@ function Grid(gridpattern) {
   }
 }
 
-Grid.prototype.render = function (canvas) {
+Grid.prototype.render = function (canvasCtx) {
   var self = this;
   _(this.lines).each(function (line) {
-    self.drawLine(line, canvas);
+    self.drawLine(line, canvasCtx);
   })
 }
 
-Grid.prototype.drawLine = function (line, canvas) {
-  canvas.fillStyle   = "111111";
-  canvas.fillRect(line.x, line.y, line.width, line.height);
+Grid.prototype.drawLine = function (line, canvasCtx) {
+  canvasCtx.fillStyle   = "111111";
+  canvasCtx.fillRect(line.x, line.y, line.width, line.height);
 }

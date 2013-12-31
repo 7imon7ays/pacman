@@ -1,9 +1,17 @@
-function Game (canvas, socket) {
-  this.canvas = canvas;
+function Game (canvasCtx, socket) {
+  this.canvasCtx = canvasCtx;
   this.socket = socket;
   this.pacmen = {};
   this.sessionid = null;
   this.grid = null;
+}
+
+Game.prototype.start = function () {
+  this.listenForGameParams();
+  this.listenForServer();
+  this.listenForPlayer();
+  this.socket.emit("gameLoaded");
+  return this;
 }
 
 Game.prototype.listenForGameParams = function () {
@@ -28,9 +36,8 @@ Game.prototype.setSessionId = function (sessionid) {
 }
 
 Game.prototype.setCanvasDimensions = function (canvasSize) {
-  $canvas = $("#canvas");
-  //$canvas.height(canvasSize.height);
-  //$canvas.width(canvasSize.width);
+  this.canvasCtx.canvas.height = canvasSize.height;
+  this.canvasCtx.canvas.width = canvasSize.width;
   this.canvasHeight = canvasSize.height;
   this.canvasWidth = canvasSize.width;
 }
@@ -66,8 +73,8 @@ Game.prototype.listenForExit = function () {
 }
 
 Game.prototype.updateAndRender = function (pacmenStates) {
-  this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-  this.grid.render(this.canvas);
+  this.canvasCtx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+  this.grid.render(this.canvasCtx);
   this.renderPacmen(pacmenStates);
 }
 
@@ -75,23 +82,15 @@ Game.prototype.renderPacmen = function (pacmenStates) {
   var self = this;
   _(pacmenStates).each(function (player) {
     self.pacmen[player.id] = _.defaults(player, self.pacmen[player.id]);
-    self.pacmen[player.id].render(self.canvas);
+    self.pacmen[player.id].render(self.canvasCtx);
   });
 }
 
-Game.prototype.start = function () {
-  this.listenForGameParams();
-  this.listenForServer();
-  this.listenForPlayer();
-  this.socket.emit("gameLoaded");
-  return this;
-}
-
-var canvas = document.getElementById("canvas").getContext("2d");
+var canvasCtx = document.getElementById("canvas").getContext("2d");
 var port;
 $.get("game-port", function (data) {
   port = data;
 });
 
 var socket = io.connect(port);
-var game = new Game(canvas, socket).start();
+var game = new Game(canvasCtx, socket).start();
