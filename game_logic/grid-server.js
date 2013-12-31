@@ -3,14 +3,14 @@ var grid = {
   // top t
   
   topTBase: {
-    x: 100,
+    x: 200,
     y: 0,
     width: 100,
     height: 4
   },
   
   topTStem: {
-    x: 150,
+    x: 250,
     y: 0,
     width: 4,
     height: 30
@@ -19,15 +19,15 @@ var grid = {
   // bottom t
   
   bottomTBase: {
-    x: 100,
-    y: 160,
+    x: 200,
+    y: 296  ,
     width: 100,
     height: 4
   },
   
   bottomTStem: {
-    x: 150,
-    y: 160,
+    x: 250,
+    y: 266,
     width: 4,
     height: 30
   },
@@ -35,29 +35,29 @@ var grid = {
   // middle rectangle
   
   midRight: {
-    x: 200,
-    y: 50,
+    x: 300,
+    y: 100,
     width: 4,
     height: 54
   },
   
   midTop: {
-    x: 100,
-    y: 50,
+    x: 200,
+    y: 100,
     width: 100,
     height: 4
   },
   
   midLeft: {
-    x: 100,
-    y: 50,
+    x: 200,
+    y: 100,
     width: 4,
     height: 50
   },
   
   midBottom: {
-    x: 100,
-    y: 100,
+    x: 200,
+    y: 150,
     width: 100,
     height: 4
   }

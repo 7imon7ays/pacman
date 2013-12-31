@@ -7,8 +7,8 @@ function Pacman (id, speed, plane, grid) {
   this.speed = speed;
   this.plane = plane;
   this.grid = grid;
-  this.x = 10;
-  this.y = 10;
+  this.x = 20;
+  this.y = 20;
   this.xDelta = this.speed;
   this.yDelta = 0;
 };
