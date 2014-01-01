@@ -12,6 +12,13 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <a href="/game-room.html">Join Room</a>
+    <form action="/game-room.html" method="POST">
+      Pick a color<br>
+      <label for="red">red</label>
+      <input type="radio" id="color" name="color" value="FF0000">
+      <label for="blue">blue</label>
+      <input type="radio" id="blue" name="color" value="104E8B">
+      <input type="submit" value="Join Room">
+    </form>
   </body>
 </html>

@@ -25,6 +25,9 @@ function handler (req, res) {
       setPort(res);
       break;
     case "/game-room.html":
+      console.log("\n\n\n\n\n\n")
+      console.log(req)
+      console.log("\n\n\n\n\n\n")
       render("public/game-room.html", res);
       break;
     case "/grid-client.js":
