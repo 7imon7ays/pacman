@@ -1,10 +1,10 @@
 var _ = require("underscore");
 var Pacman = require("./pacman-server");
 
-function Game (pacmanSpeed, canvasDimensions) {
+function Game () {
   this.playerCount = 0;
-  this.pacmanSpeed = pacmanSpeed;
-  this.plane = canvasDimensions;
+  this.pacmanSpeed = 2;
+  this.plane = { height: 300, width: 500 };
   this.sockets = {};
   this.pacmen = {};
   this.grid = require("./grid-server")
@@ -62,7 +62,7 @@ Game.prototype.animate = function () {
 Game.prototype.listenForExit = function (socket) {
   self = this;
   socket.on("disconnect", function () {
-    console.log("player disconnected");
+    console.log("Player disconnected.\n");
     var playerId = socket.id;
     delete self.sockets[playerId];
     delete self.pacmen[playerId];

@@ -2,15 +2,18 @@ var _ = require("underscore")
   , http = require("http")
   , io = require("socket.io")
   , fs = require("fs")
-  , Game = require("./game_logic/game-server");
+  , querystring = require("querystring")
+  , PacmanGame = require("./game_logic/game-server");
 
 function Server () {
   this.port = process.env.PORT || 3000;
+  this.sessions = {};
 }
 
 Server.prototype.run = function () {
   var self = this;
-  this.app = http.createServer(this.handler.bind(this));
+  var boundHandler = this.handler.bind(this);
+  this.app = http.createServer(boundHandler);
   this.io = io.listen(this.app);
   this.app.listen(this.port);
   this.io.on("connection", function(socket) {
@@ -24,9 +27,7 @@ Server.prototype.listenForGameLoad = function (socket) {
     if (self.game) {
       self.game.addPlayer(socket);
     } else {
-      var canvasDimensions = { height: 300, width: 500 };
-      var pacmanSpeed = 2;
-      self.game = new Game(pacmanSpeed, canvasDimensions);
+      self.game = new PacmanGame();
       self.game.start(socket);
     }
   });
@@ -61,9 +62,9 @@ Server.prototype.handler = function (req, res) {
       this.declarePort(res);
       break;
     case "/game-room.html":
-      console.log("\n\n\n\n\n\n")
-      console.log(req)
-      console.log("\n\n\n\n\n\n")
+      req.on("data", function (chunk) {
+        var decodedBody = querystring.parse(chunk.toString());
+      });
       this.render("public/game-room.html", res);
       break;
     case "/grid-client.js":
@@ -73,7 +74,7 @@ Server.prototype.handler = function (req, res) {
       this.render("public/pacman-client.js", res);
       break;
     case "/pacman-style.css":
-        this.render("public/pacman-style.css", res);
+      this.render("public/pacman-style.css", res);
       break;
     default:
       res.writeHead(404);
