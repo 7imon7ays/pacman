@@ -23,12 +23,12 @@ Server.prototype.run = function () {
 
 Server.prototype.listenForGameLoad = function (socket) {
   var self = this;
-  socket.on("gameLoaded", function () {
+  socket.on("gameLoaded", function (gameOptions) {
     if (self.game) {
-      self.game.addPlayer(socket);
+      self.game.addPlayer(socket, gameOptions);
     } else {
       self.game = new PacmanGame();
-      self.game.start(socket);
+      self.game.start(socket, gameOptions);
     }
   });
 }
@@ -43,6 +43,32 @@ Server.prototype.render = function (filename, res) {
     res.writeHead(200);
     res.end(data);
   });
+}
+
+Server.prototype.loadGame = function (res, reqBody) {
+  var self = this;
+  fs.readFile("public/game-room.html", function (err, data) {
+    if (err) {
+      res.writeHead(500);
+      return res.end("Error loading " + filename);
+    }
+
+    res.writeHead(200);
+    res.write(data);
+    self._setColor(res, reqBody)
+    res.end();
+  });
+}
+
+Server.prototype._setColor = function (res, colorSelection) {
+  var colorTag = "<script id='color-selection' type='text/json'>"
+                  + JSON.stringify(colorSelection)
+                  + "</script>"
+  var gameStarter = "<script type='text/javascript'>"
+                  + "game.start()"
+                  + "</script>"
+  res.write(colorTag);
+  res.write(gameStarter);
 }
 
 Server.prototype.declarePort = function (res) {
@@ -62,10 +88,11 @@ Server.prototype.handler = function (req, res) {
       this.declarePort(res);
       break;
     case "/game-room.html":
+      var self = this;
       req.on("data", function (chunk) {
-        var decodedBody = querystring.parse(chunk.toString());
+        var requestBody = querystring.parse(chunk.toString());
+        self.loadGame(res, requestBody);
       });
-      this.render("public/game-room.html", res);
       break;
     case "/grid-client.js":
       this.render("public/grid-client.js", res);

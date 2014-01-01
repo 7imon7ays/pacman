@@ -3,8 +3,8 @@ function Pacman (id) {
 }
 
 Pacman.prototype.render = function (context) {
-  context.fillStyle = "FF0000";
-  context.strokeStyle = "FF0000";
+  context.fillStyle = this.color.hexValue;
+  context.strokeStyle = this.color.hexValue;
   context.beginPath();
   context.arc(this.x, this.y, this.size, 0, Math.PI*2, true);
   context.closePath();

@@ -10,7 +10,9 @@ Game.prototype.start = function () {
   this.listenForGameParams();
   this.listenForServer();
   this.listenForPlayer();
-  this.socket.emit("gameLoaded");
+  var colorJSON = $("#color-selection").html();
+  var colorSelection = JSON.parse(colorJSON);
+  this.socket.emit("gameLoaded", colorSelection);
   return this;
 }
 
@@ -93,4 +95,4 @@ $.get("game-port", function (data) {
 });
 
 var socket = io.connect(port);
-var game = new Game(canvasCtx, socket).start();
+var game = new Game(canvasCtx, socket);

@@ -10,16 +10,16 @@ function Game () {
   this.grid = require("./grid-server")
 };
 
-Game.prototype.start = function (socket) {
-  this.addPlayer(socket);
+Game.prototype.start = function (socket, gameOptions) {
+  this.addPlayer(socket, gameOptions);
   this.animate();
 }
 
-Game.prototype.addPlayer = function (socket) {
+Game.prototype.addPlayer = function (socket, gameOptions) {
   var self = this;
   this.playerCount++;
   this.sockets[socket.id] = socket;
-  this.pacmen[socket.id] = new Pacman(socket.id, this.pacmanSpeed, this.plane, this.grid);
+  this.pacmen[socket.id] = new Pacman(socket.id, this.pacmanSpeed, this.plane, this.grid, gameOptions);
   _(this.sockets).each(function (socket) { self.setParams(socket); });
   this.listenForInput(socket);
   this.listenForExit(socket);
@@ -50,7 +50,7 @@ Game.prototype.animate = function () {
   setInterval(function () {
     var pacmenStates = {};
     _(self.pacmen).each(function (pacman) {
-      pacmenStates[pacman.id] = _(pacman).pick("id", "x", "y", "xDelta", "yDelta", "size");
+      pacmenStates[pacman.id] = _(pacman).pick("id", "color", "x", "y", "xDelta", "yDelta", "size");
     });
     self.step();
     _(self.sockets).each(function (socket) {

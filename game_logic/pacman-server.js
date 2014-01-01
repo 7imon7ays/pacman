@@ -1,9 +1,12 @@
 var _ = require("underscore");
 
-function Pacman (id, speed, plane, grid) {
+function Pacman (id, speed, plane, grid, color) {
+  this.id = id;
+  this.color = color;
+
   this.size = 10;
   this.buffer = 10 + 7;
-  this.id = id;
+
   this.speed = speed;
   this.plane = plane;
   this.grid = grid;
