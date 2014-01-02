@@ -1,5 +1,5 @@
-var _ = require("underscore");
-var Pacman = require("./pacman-server");
+var _ = require("underscore")
+  , Pacman = require("./pacman-server");
 
 function Game () {
   this.settings = {
