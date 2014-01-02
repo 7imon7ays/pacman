@@ -7,7 +7,6 @@ var _ = require("underscore")
 
 function Server () {
   this.port = process.env.PORT || 3000;
-  this.sessions = {};
 }
 
 Server.prototype.run = function () {
@@ -55,19 +54,23 @@ Server.prototype.loadGame = function (res, reqBody) {
 
     res.writeHead(200);
     res.write(data);
-    self._setColor(res, reqBody)
+    self._setColor(res, reqBody);
+    self._triggerStart(res);
     res.end();
   });
 }
 
-Server.prototype._setColor = function (res, colorSelection) {
+Server.prototype._setColor = function (res, reqBody) {
   var colorTag = "<script id='color-selection' type='text/json'>"
-                  + JSON.stringify(colorSelection)
-                  + "</script>"
+                  + JSON.stringify(reqBody)
+                  + "</script>";
+  res.write(colorTag);
+}
+
+Server.prototype._triggerStart = function (res) {
   var gameStarter = "<script type='text/javascript'>"
                   + "game.start()"
                   + "</script>"
-  res.write(colorTag);
   res.write(gameStarter);
 }
 

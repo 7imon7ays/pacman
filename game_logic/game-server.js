@@ -2,12 +2,14 @@ var _ = require("underscore");
 var Pacman = require("./pacman-server");
 
 function Game () {
+  this.settings = {
+    pacmanSpeed: 2,
+    plane: { height: 300, width: 500 },
+    grid: require("./grid-server")
+  };
   this.playerCount = 0;
-  this.pacmanSpeed = 2;
-  this.plane = { height: 300, width: 500 };
   this.sockets = {};
   this.pacmen = {};
-  this.grid = require("./grid-server")
 };
 
 Game.prototype.start = function (socket, gameOptions) {
@@ -15,11 +17,11 @@ Game.prototype.start = function (socket, gameOptions) {
   this.animate();
 }
 
-Game.prototype.addPlayer = function (socket, gameOptions) {
+Game.prototype.addPlayer = function (socket, colorChoice) {
   var self = this;
   this.playerCount++;
   this.sockets[socket.id] = socket;
-  this.pacmen[socket.id] = new Pacman(socket.id, this.pacmanSpeed, this.plane, this.grid, gameOptions);
+  this.pacmen[socket.id] = new Pacman(socket.id, this.settings, colorChoice);
   _(this.sockets).each(function (socket) { self.setParams(socket); });
   this.listenForInput(socket);
   this.listenForExit(socket);
@@ -27,7 +29,7 @@ Game.prototype.addPlayer = function (socket, gameOptions) {
 
 Game.prototype.setParams = function (socket) {
   var pacmenIDs = this._getPacmenIDs();
-  socket.emit("setParams", { canvasSize: this.plane, pacmenIDs: pacmenIDs, grid: this.grid });
+  socket.emit("setParams", { canvasSize: this.settings.plane, pacmenIDs: pacmenIDs, grid: this.settings.grid });
 }
 
 Game.prototype._getPacmenIDs = function () {
@@ -62,7 +64,7 @@ Game.prototype.animate = function () {
 Game.prototype.listenForExit = function (socket) {
   self = this;
   socket.on("disconnect", function () {
-    console.log("Player disconnected.\n");
+    console.log("\nPlayer disconnected.\n");
     var playerId = socket.id;
     delete self.sockets[playerId];
     delete self.pacmen[playerId];

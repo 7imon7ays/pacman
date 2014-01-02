@@ -1,21 +1,27 @@
 var _ = require("underscore");
 
-function Pacman (id, speed, plane, grid, color) {
+function Pacman (id, gameSettings, color) {
   this.id = id;
-  this.color = color;
+  this.color = this.constructor.Colors[color.color];
 
   this.size = 10;
   this.buffer = 10 + 7;
 
-  this.speed = speed;
-  this.plane = plane;
-  this.grid = grid;
+  this.speed = gameSettings.pacmanSpeed;
+  this.plane = gameSettings.plane;
+  this.grid = gameSettings.grid;
   this.x = 20;
   this.y = 20;
   this.xDelta = this.speed;
   this.yDelta = 0;
 };
 
+Pacman.Colors = {
+  red: "FF0000",
+  blue: "6E82F0",
+  green: "5FDE81",
+  yellow: "F0EA3A"
+}
 
 Pacman.prototype.step = function () {
   var self = this;
