@@ -6,6 +6,9 @@
     "url": "https://github.com/7imon7ays/pacmen"
   },
   "author": "7imon7ays",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "socket.io": "*",
     "underscore": "*",
