@@ -1,5 +1,6 @@
 var _ = require("underscore")
-  , Pacman = require("./pacman-server");
+  , Pacman = require("./pacman-server")
+  , Ghost = require("./ghost-server");
 
 function Game () {
   this.settings = {
@@ -10,6 +11,7 @@ function Game () {
   this.playerCount = 0;
   this.sockets = {};
   this.pacmen = {};
+  this.ghosts = {};
 };
 
 Game.prototype.start = function (socket, gameOptions) {
@@ -22,6 +24,7 @@ Game.prototype.addPlayer = function (socket, colorChoice) {
   this.playerCount++;
   this.sockets[socket.id] = socket;
   this.pacmen[socket.id] = new Pacman(socket.id, this.settings, colorChoice);
+  this.ghosts[socket.id] = new Ghost(socket.id, this.pacmen[socket.id], this.settings);
   _(this.sockets).each(function (socket) { self.setParams(socket); });
   this.listenForInput(socket);
   this.listenForExit(socket);
@@ -50,16 +53,47 @@ Game.prototype.listenForInput = function (socket) {
 Game.prototype.animate = function () {
   var self = this;
   setInterval(function () {
-    var pacmenStates = {};
-    _(self.pacmen).each(function (pacman) {
-      pacmenStates[pacman.id] = _(pacman).pick("id", "color", "x", "y", "xDelta", "yDelta", "size");
-    });
     self.step();
-    _(self.sockets).each(function (socket) {
-      socket.emit("update", pacmenStates);
-    });
+    self.updateClients();
   }, 30)
 }
+
+Game.prototype.step = function () {
+  if (_(this.pacmen).isEmpty()) return;
+  _(this.pacmen).each(function(pacman){ pacman.step(); });
+  _(this.ghosts).each(function (ghost) { ghost.step(); });
+};
+
+Game.prototype.updateClients = function () {
+  var pacmenStates = this._createPacmenStates();
+  var ghostStates = this._createGhostStates();
+
+  _(self.sockets).each(function (socket) {
+    socket.emit("update", pacmenStates);
+  });
+}
+
+Game.prototype._createPacmenStates = function () {
+  var pacmenStates = {};
+  _(self.pacmen).each(function (pacman) {
+    pacmenStates[pacman.id] = _(pacman).pick("id", "color", "x", "y", "xDelta", "yDelta", "size");
+  });
+
+  return pacmenStates;
+}
+
+Game.prototype._createGhostStates = function () {
+  var ghostStates = {};
+  _(self.ghosts).each(function (ghost) {
+    ghostStates[ghost.id] = _(ghost).pick("id", "color", "x", "y", "xDelta", "yDelta", "size");
+  });
+
+  return ghostStates;
+}
+
+Game.prototype.handleKeyPress = function (keyCode, socketid) {
+  this.pacmen[socketid].turn(keyCode);
+};
 
 Game.prototype.listenForExit = function (socket) {
   self = this;
@@ -77,14 +111,5 @@ Game.prototype.announceExit = function (playerId) {
     socket.emit("playerDisconnected", playerId)
   })
 }
-
-Game.prototype.step = function () {
-  if (_(this.pacmen).isEmpty()) return;
-  _(this.pacmen).each(function(pacman){ pacman.step(); });
-};
-
-Game.prototype.handleKeyPress = function (keyCode, socketid) {
-  this.pacmen[socketid].turn(keyCode);
-};
 
 module.exports = Game;

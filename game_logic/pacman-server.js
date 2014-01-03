@@ -1,5 +1,5 @@
-var _ = require("underscore");
-var MovingObject = require("./moving-object-server")
+var _ = require("underscore")
+  , MovingObject = require("./moving-object-server")
 
 function Pacman (id, gameSettings, color) {
   this.id = id;
@@ -17,9 +17,7 @@ function Pacman (id, gameSettings, color) {
   this.yDelta = 0;
 };
 
-function Surrogate () {}
-Surrogate.prototype = MovingObject.prototype;
-Pacman.prototype = new Surrogate();
+MovingObject.bequeath(Pacman);
 
 Pacman.Colors = {
   red: "FF0000",
