@@ -61,15 +61,19 @@ Game.prototype.animate = function () {
 Game.prototype.step = function () {
   if (_(this.pacmen).isEmpty()) return;
   _(this.pacmen).each(function(pacman){ pacman.step(); });
-  _(this.ghosts).each(function (ghost) { ghost.step(); });
+  _(this.ghosts).each(function (ghost) { 
+    console.log("\n\n\n" + ghost.constructor + "\n\n\n");
+    ghost.step();
+  });
 };
 
 Game.prototype.updateClients = function () {
   var pacmenStates = this._createPacmenStates();
   var ghostStates = this._createGhostStates();
+  var gameState = { pacmen: pacmenStates, ghosts: ghostStates };
 
   _(self.sockets).each(function (socket) {
-    socket.emit("update", pacmenStates);
+    socket.emit("update", gameState);
   });
 }
 
@@ -102,6 +106,7 @@ Game.prototype.listenForExit = function (socket) {
     var playerId = socket.id;
     delete self.sockets[playerId];
     delete self.pacmen[playerId];
+    delete self.ghosts[playerId];
     self.announceExit(playerId);
   })
 }

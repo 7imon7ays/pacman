@@ -3,6 +3,7 @@ var _ = require("underscore")
 
 function Ghost (id, pacman, gameSettings) {
   this.id = id;
+  this.color = "000000"
   this.pacman = pacman;
 
   this.size = 10;
@@ -11,11 +12,13 @@ function Ghost (id, pacman, gameSettings) {
   this.speed = gameSettings.pacmanSpeed;
   this.plane = gameSettings.plane;
   this.grid = gameSettings.grid;
-  this.x = 50;
-  this.y = 50;
+  this.x = 100;
+  this.y = 100;
   this.xDelta = this.speed;
   this.yDelta = 0;
 }
+
+MovingObject.bequeath(Ghost);
 
 Ghost.prototype.heatSeak = function () {
   var horiDistance = Math.abs(this.pacman.x - this.x);
@@ -39,7 +42,5 @@ Ghost.prototype.step = function () {
     console.log("\nGhost blocked!\n");
   }
 };
-
-MovingObject.bequeath(Ghost);
 
 module.exports = Ghost;

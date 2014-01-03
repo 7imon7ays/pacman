@@ -2,6 +2,7 @@ function Game (canvasCtx, socket) {
   this.canvasCtx = canvasCtx;
   this.socket = socket;
   this.pacmen = {};
+  this.ghosts = {};
   this.sessionid = null;
   this.grid = null;
 }
@@ -30,6 +31,7 @@ Game.prototype.applyGameParams = function (gameParams) {
   this.grid = new Grid(gameParams.grid);
   _(gameParams.pacmenIDs).each(function (id) {
     self.addPlayer(id);
+    self.addGhost(id);
   });
 }
 
@@ -48,6 +50,10 @@ Game.prototype.addPlayer = function (id) {
   this.pacmen[id] = new Pacman(id);
 }
 
+Game.prototype.addGhost = function (id) {
+  this.ghosts[id] = new Ghost(id);
+}
+
 Game.prototype.listenForPlayer = function () {
   var self = this;
   $(document).on("keydown", function (event) {
@@ -62,8 +68,8 @@ Game.prototype.listenForServer = function () {
 
 Game.prototype.listenForUpdate = function () {
   var self = this;
-  this.socket.on("update", function (pacmenStates) {
-    self.updateAndRender(pacmenStates);
+  this.socket.on("update", function (gameState) {
+    self.updateAndRender(gameState);
   });
 }
 
@@ -71,20 +77,34 @@ Game.prototype.listenForExit = function () {
   var self = this;
   this.socket.on("playerDisconnected", function (playerId) {
     delete self.pacmen[playerId];
+    delete self.ghosts[playerId];
   })
 }
 
-Game.prototype.updateAndRender = function (pacmenStates) {
+Game.prototype.updateAndRender = function (gameState) {
   this.canvasCtx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
   this.grid.render(this.canvasCtx);
-  this.renderPacmen(pacmenStates);
+  this.renderGame(gameState);
 }
 
-Game.prototype.renderPacmen = function (pacmenStates) {
+Game.prototype.renderGame = function (gameState) {
+  this._renderPacmen(gameState.pacmen);
+  this._renderGhosts(gameState.ghosts);
+}
+
+Game.prototype._renderPacmen = function (pacmenStates) {
   var self = this;
   _(pacmenStates).each(function (state) {
     self.pacmen[state.id] = _.defaults(state, self.pacmen[state.id]);
     self.pacmen[state.id].render(self.canvasCtx);
+  });
+}
+
+Game.prototype._renderGhosts = function (ghostStates) {
+  var self = this;
+  _(ghostStates).each(function (state) {
+    self.ghosts[state.id] = _.defaults(state, self.ghosts[state.id]);
+    self.ghosts[state.id].render(self.canvasCtx);
   });
 }
 

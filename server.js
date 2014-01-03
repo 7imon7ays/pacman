@@ -97,6 +97,9 @@ Server.prototype.handler = function (req, res) {
         self.loadGame(res, requestBody);
       });
       break;
+    case "/ghost-client.js":
+      this.render("public/ghost-client.js", res);
+      break;
     case "/grid-client.js":
       this.render("public/grid-client.js", res);
       break;
