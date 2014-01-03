@@ -4,9 +4,9 @@ var _ = require("underscore")
 function Pacman (id, gameSettings, color) {
   this.id = id;
   this.color = Pacman.Colors[color.color] || "000000";
-
+  
   this.size = 10;
-  this.buffer = this.size + 7;
+  this.buffer = this.size * 2;
 
   this.speed = gameSettings.pacmanSpeed;
   this.plane = gameSettings.plane;

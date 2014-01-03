@@ -62,7 +62,6 @@ Game.prototype.step = function () {
   if (_(this.pacmen).isEmpty()) return;
   _(this.pacmen).each(function(pacman){ pacman.step(); });
   _(this.ghosts).each(function (ghost) { 
-    console.log("\n\n\n" + ghost.constructor + "\n\n\n");
     ghost.step();
   });
 };

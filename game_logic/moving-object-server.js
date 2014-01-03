@@ -1,10 +1,6 @@
 var _ = require("underscore");
 
 function MovingObject () {
-  this.x = 50;
-  this.y = 50;
-  this.xDelta = 0;
-  this.yDelta = 0;
 }
 
 MovingObject.prototype.step = function () {
