@@ -20,6 +20,22 @@ function Ghost (id, pacman, gameSettings) {
 
 MovingObject.bequeath(Ghost);
 
+Ghost.prototype.step = function () {
+  this.findDirection();
+  this.x += this.xDelta;
+  this.y += this.yDelta;
+}
+
+Ghost.prototype.findDirection = function () {
+ var blockedDirection = this.checkForBlocks();
+
+ if (blockedDirection) {
+   this.takeDetour(blockedDirection);
+ } else {
+   this.heatSeak();
+ }
+}
+
 Ghost.prototype.heatSeak = function () {
   var horiDistance = Math.abs(this.pacman.x - this.x);
   var vertiDistance = Math.abs(this.pacman.y - this.y);
@@ -33,14 +49,25 @@ Ghost.prototype.heatSeak = function () {
   }
 };
 
-Ghost.prototype.step = function () {
-  if (!this.checkForBlocks()) {
-    this.heatSeak();
-    this.x += this.xDelta;
-    this.y += this.yDelta;
-  } else {
-    console.log("\nGhost blocked!\n");
+Ghost.prototype.takeDetour = function (blockedDirection) {
+  switch(blockedDirection) {
+  case "right":
+    this.xDelta = 0;
+    this.yDelta = 2;
+    break;
+  case "left":
+    this.xDelta = 0;
+    this.yDelta = 2;
+    break;
+  case "top":
+    this.xDelta = 2;
+    this.yDelta = 0;
+    break;
+  case "bottom":
+    this.xDelta = 2;
+    this.yDelta = 0;
+    break;
   }
-};
+}
 
 module.exports = Ghost;
