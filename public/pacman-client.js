@@ -38,4 +38,5 @@ Pacman.prototype.render = function (context) {
   context.lineTo(this.x, this.y);
   context.closePath();
   context.fill();
-}
+};
+

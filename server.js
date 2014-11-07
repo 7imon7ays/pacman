@@ -18,7 +18,7 @@ Server.prototype.run = function () {
   this.io.on("connection", function(socket) {
     self.listenForGameLoad(socket);
   });
-}
+};
 
 Server.prototype.listenForGameLoad = function (socket) {
   var self = this;
@@ -30,7 +30,7 @@ Server.prototype.listenForGameLoad = function (socket) {
       self.game.start(socket, gameOptions);
     }
   });
-}
+};
 
 Server.prototype.render = function (filename, res) {
   fs.readFile(filename, function (err, data) {
@@ -42,7 +42,7 @@ Server.prototype.render = function (filename, res) {
     res.writeHead(200);
     res.end(data);
   });
-}
+};
 
 Server.prototype.loadGame = function (res, reqBody) {
   var self = this;
@@ -58,26 +58,26 @@ Server.prototype.loadGame = function (res, reqBody) {
     self._triggerStart(res);
     res.end();
   });
-}
+};
 
 Server.prototype._setColor = function (res, reqBody) {
   var colorTag = "<script id='color-selection' type='text/json'>"
                   + JSON.stringify(reqBody)
                   + "</script>";
   res.write(colorTag);
-}
+};
 
 Server.prototype._triggerStart = function (res) {
   var gameStarter = "<script type='text/javascript'>"
                   + "game.start()"
                   + "</script>"
   res.write(gameStarter);
-}
+};
 
 Server.prototype.declarePort = function (res) {
   res.writeHead(200);
   res.end(this.port.toString());
-}
+};
 
 Server.prototype.handler = function (req, res) {
   switch (req.url) {
@@ -114,6 +114,6 @@ Server.prototype.handler = function (req, res) {
       res.end("Not found");
       break;
   }
-}
+};
 
 new Server().run();
